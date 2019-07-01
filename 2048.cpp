@@ -111,23 +111,7 @@ public:
 
 	int Getkey(int k)		//获取键盘的键值
 	{
-		//int res = 0;
-		//char c;
-		//c = getch();
-		//if (!isascii(c))
-		//{
-		//	c = getch();
-		//	switch (c)
-		//	{
-		//	case 72:res = 1; break;//上
-		//	case 80:res = 2; break;//下
-		//	case 75:res = 3; break;//左
-		//	case 77:res = 4; break;//右
-		//	default:break;
-		//	}
-		//}
-		//return res;
-			k = getch();
+		k = getch();
 		return k;
 	}
 
@@ -325,63 +309,96 @@ public:
 		return true;
 	}
 
+	void GameReady()
+	{
+		setbkmode(TRANSPARENT);
+		setfont(15, 0, "楷体");
+		setcolor(LIGHTRED);
+		outtextxy(170, 80, "游戏操作：");
+		outtextxy(260, 80, "Esc：退出游戏");
+		outtextxy(380, 80, "上->W 下->S 左->A 右->D");
+		outtextxy(290, 610, "按任意键进入游戏！");
+	}
+
 private:
 	int _arr[ROW][COL];
 };
 
 int main()
 {
-	Game game;
-	initgraph(724, 724);
-	PIMAGE img;
-	img = newimage();
-	getimage(img, "game.gif");
-	putimage(100, 200, img);
-	getch();
-	int res = 0;
-	for (; is_run(); delay_fps(60))
+	while (1)
 	{
-		if (game.isWin())
+		Game game;
+		initgraph(724, 690);
+		PIMAGE img;
+		img = newimage();
+		getimage(img, "game.gif");
+		putimage(60, 50, img);
+		game.GameReady();
+		getch();
+		int res = 0;
+		for (; is_run(); delay_fps(60))
 		{
-			getimage(img, "win.gif");
-			putimage(100, 200, img);
-			break;
+			if (game.isWin())
+			{
+				cleardevice();
+				getimage(img, "win.gif");
+				putimage(60, 50, img);
+				break;
+			}
+			if (game.isLose())
+			{
+				cleardevice();
+				getimage(img, "lose.gif");
+				putimage(60, 50, img);
+				break;
+			}
+			cleardevice();
+			game.draw();
+			res = getch(); 
+			if (res == 27)
+			{
+				while (1)
+				{
+					setbkmode(TRANSPARENT);
+					setfont(20, 0, "楷体");
+					setcolor(LIGHTRED);
+					outtextxy(290, 350, "是否退出游戏？");
+					outtextxy(330, 380, "y or n");
+					res = getch();
+					if (res == 'n')
+					{
+						break;
+					}
+					else if (res == 'y')
+					{
+						return 0;
+					}
+				}
+			}
+			if (res == 'w' || res == 's' || res == 'a' || res == 'd')
+			{
+				game.Process(res);
+			}
 		}
-		if (game.isLose())
+		while (1)
 		{
-			getimage(img, "lose.gif");
-			putimage(100, 200, img);
-			break;
+			setbkmode(TRANSPARENT);
+			setfont(38, 0, "楷体");
+			setcolor(LIGHTRED);
+			outtextxy(290, 350, "是否重新开始游戏？");
+			outtextxy(330, 380, "y or n");
+			res = getch();
+			if (res == 'n')
+			{
+				return 0;
+			}
+			else if (res == 'y')
+			{
+				break;
+			}
 		}
-		cleardevice();
-		game.draw();
-		res = getch(); 
-		game.Process(res);
-
 	}
-
-
-
 	closegraph();
-	//Game game;
-	//while (1)
-	//{
-	//	if (game.isWin())
-	//	{
-	//		cout << "You Win" << endl;
-	//		break;
-	//	}
-	//	if (game.isLose())
-	//	{
-	//		cout << "You Lose" << endl;
-	//		break;
-	//	}
-	//	game.CreatNumber();
-	//	system("cls");
-	//	game.Print();
-	//	int res = game.Getkey();
-	//	game.Process(res);
-	//}
 	return 0;
 }
-
